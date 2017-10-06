@@ -1,7 +1,7 @@
 package com.blowmymind.libgen;
 
 import com.blowmymind.libgen.DataLayer.DataLayer;
-import com.blowmymind.libgen.MainActivity_MVP.MainCallbackInterface;
+import com.blowmymind.libgen.MainActivity_MVP.DataCallbackInterface;
 
 import org.jsoup.nodes.Document;
 import org.junit.Test;
@@ -22,11 +22,7 @@ public class DataLayerTest {
     @Test
     public void scraping_isDone(){
         DataLayer dataLayer = new DataLayer("dan+brown");
-        dataLayer.initSearch(new MainCallbackInterface() {
-            @Override
-            public void newSearchTerm(String currentSearchTerm) {
-
-            }
+        dataLayer.initSearch(new DataCallbackInterface() {
 
             @Override
             public void searchFailed() {

@@ -1,6 +1,6 @@
 package com.blowmymind.libgen.DataLayer;
 
-import com.blowmymind.libgen.MainActivity_MVP.MainCallbackInterface;
+import com.blowmymind.libgen.MainActivity_MVP.DataCallbackInterface;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -22,17 +22,16 @@ public class DataLayer {
         this.searchTerm = searchTerm;
     }
 
-    public void initSearch(final MainCallbackInterface callbackInterface){
+    public void initSearch(final DataCallbackInterface callbackInterface){
         FetcherThread fetcherThread = new FetcherThread(callbackInterface);
         fetcherThread.start();
     }
 
+    private class FetcherThread extends Thread{
 
-    class FetcherThread extends Thread{
+        private final DataCallbackInterface callbackInterface;
 
-        private final MainCallbackInterface callbackInterface;
-
-        public FetcherThread(MainCallbackInterface callbackInterface){
+        FetcherThread(DataCallbackInterface callbackInterface){
             this.callbackInterface = callbackInterface;
         }
 

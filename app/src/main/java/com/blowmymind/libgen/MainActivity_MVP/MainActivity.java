@@ -17,7 +17,7 @@ import org.jsoup.nodes.Document;
 import butterknife.BindView;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements MainCallbackInterface{
+public class MainActivity extends AppCompatActivity implements MainCallbackInterface,DataCallbackInterface{
 
     @BindView(R.id.am_fab_search)
     FloatingActionButton fab;
