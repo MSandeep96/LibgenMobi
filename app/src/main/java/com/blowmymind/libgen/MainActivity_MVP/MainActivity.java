@@ -1,6 +1,8 @@
 package com.blowmymind.libgen.MainActivity_MVP;
 
 import android.app.AlertDialog;
+import android.app.Fragment;
+import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -22,7 +24,18 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
 
     @OnClick(R.id.am_fab_search)
     void searchClicked(){
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+        if (prev != null) {
+            return;
+        }
+        ft.addToBackStack(null);
+        /*
 
+
+        // Create and show the dialog.
+        DialogFragment newFragment = MyDialogFragment.newInstance(mStackLevel);
+        newFragment.show(ft, "dialog");*/
     }
 
     @BindView(R.id.am_rv_books)
@@ -38,8 +51,6 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
 
     }
 
-
-
     @Override
     public void newSearchTerm(String currentSearchTerm) {
         DataLayer mSearchBox = new DataLayer(currentSearchTerm);
@@ -50,8 +61,8 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
     public void searchFailed() {
         AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(this);
         alertDialogBuilder
-                .setTitle("Error")
-                .setMessage("Unsuccesful in fetching books list")
+                .setTitle(R.string.error)
+                .setMessage(R.string.error_msg)
                 .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
 
