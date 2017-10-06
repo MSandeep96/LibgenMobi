@@ -1,4 +1,4 @@
-package com.blowmymind.libgen.MainActivity_MVP;
+package com.blowmymind.libgen.mainActivity_MVP;
 
 import org.jsoup.nodes.Document;
 

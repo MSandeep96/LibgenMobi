@@ -1,15 +1,16 @@
-package com.blowmymind.libgen.Dialogs;
+package com.blowmymind.libgen.dialogs;
 
 
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.blowmymind.libgen.MainActivity_MVP.MainCallbackInterface;
+import com.blowmymind.libgen.mainActivity_MVP.MainCallbackInterface;
 import com.blowmymind.libgen.R;
 
 import java.io.UnsupportedEncodingException;
@@ -18,6 +19,7 @@ import java.net.URLEncoder;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnTextChanged;
 
 public class SearchDialogFragment extends DialogFragment {
 
@@ -31,29 +33,39 @@ public class SearchDialogFragment extends DialogFragment {
     Button clear;
 
     @OnClick(R.id.fsd_btn_clear)
-    void clearClicked(View view){
+    void clearClicked(View view) {
         searchTerm.setText("");
         view.setVisibility(View.GONE);
+    }
+
+    @OnTextChanged(R.id.fsd_et_search)
+    void onTextChanged(Editable editable) {
+        if (editable.toString().length() == 0) {
+            clear.setVisibility(View.GONE);
+        } else {
+            clear.setVisibility(View.VISIBLE);
+        }
     }
 
     @BindView(R.id.fsd_et_search)
     EditText searchTerm;
 
     @OnClick(R.id.fsd_btn_go)
-    void startSearch(){
+    void startSearch() {
         String currentSearchTerm = searchTerm.getText().toString().trim().toLowerCase();
-        if(previousSearch.equals(currentSearchTerm)){
+        if (currentSearchTerm.length() == 0 ||
+                (previousSearch != null && previousSearch.equals(currentSearchTerm))) {
             dismiss();
             return;
         }
-        try{
-            currentSearchTerm = URLEncoder.encode(currentSearchTerm,"utf-8");
-        }catch (UnsupportedEncodingException e) {
+        try {
+            currentSearchTerm = URLEncoder.encode(currentSearchTerm, "utf-8");
+        } catch (UnsupportedEncodingException e) {
             searchTerm.setError("Invalid characters");
             dismiss();
             return;
         }
-        ((MainCallbackInterface)getContext()).newSearchTerm(currentSearchTerm);
+        ((MainCallbackInterface) getContext()).newSearchTerm(currentSearchTerm);
         dismiss();
     }
 
@@ -61,14 +73,10 @@ public class SearchDialogFragment extends DialogFragment {
         // Required empty public constructor
     }
 
-    public static SearchDialogFragment newInstance() {
-        return SearchDialogFragment.newInstance(false,null);
-    }
-
     /**
-     * @param hasSearchTerm     If a search has been performed, contains true
-     * @param previousSearch    The string of the previous search
-     * @return  the dialog with inflated with the above values
+     * @param hasSearchTerm  If a search has been performed, contains true
+     * @param previousSearch The string of the previous search
+     * @return the dialog with inflated with the above values
      */
     public static SearchDialogFragment newInstance(boolean hasSearchTerm, String previousSearch) {
         SearchDialogFragment fragment = new SearchDialogFragment();
@@ -84,7 +92,7 @@ public class SearchDialogFragment extends DialogFragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             hasSearchTerm = getArguments().getBoolean(ARG_PARAM1);
-            if(hasSearchTerm) {
+            if (hasSearchTerm) {
                 previousSearch = getArguments().getString(ARG_PARAM2);
             }
         }
@@ -94,15 +102,16 @@ public class SearchDialogFragment extends DialogFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_search_dialog, container, false);
-        ButterKnife.bind(this,view);
+        ButterKnife.bind(this, view);
         setUpDialog();
         return view;
     }
 
     private void setUpDialog() {
-        if(hasSearchTerm){
+        if (hasSearchTerm) {
             searchTerm.setText(previousSearch);
-            clear.setVisibility(View.VISIBLE);
+            if (previousSearch.length() != 0)
+                clear.setVisibility(View.VISIBLE);
         }
     }
 

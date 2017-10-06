@@ -1,4 +1,4 @@
-package com.blowmymind.libgen.MainActivity_MVP;
+package com.blowmymind.libgen.mainActivity_MVP;
 
 /**
  * Created by Sandeep on 06-10-2017.

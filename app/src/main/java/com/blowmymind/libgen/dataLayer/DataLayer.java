@@ -1,6 +1,6 @@
-package com.blowmymind.libgen.DataLayer;
+package com.blowmymind.libgen.dataLayer;
 
-import com.blowmymind.libgen.MainActivity_MVP.DataCallbackInterface;
+import com.blowmymind.libgen.mainActivity_MVP.DataCallbackInterface;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -46,10 +46,12 @@ public class DataLayer {
                         .timeout(4000)
                         .get();
             } catch (IOException e) {
-                callbackInterface.searchFailed();
+                if(callbackInterface!=null)
+                    callbackInterface.searchFailed();
                 return;
             }
-            callbackInterface.searchSuccess(doc);
+            if(callbackInterface!=null)
+                callbackInterface.searchSuccess(doc);
         }
     }
 }

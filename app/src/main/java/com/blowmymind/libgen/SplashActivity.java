@@ -4,7 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.blowmymind.libgen.MainActivity_MVP.MainActivity;
+import com.blowmymind.libgen.mainActivity_MVP.MainActivity;
 
 public class SplashActivity extends AppCompatActivity {
 

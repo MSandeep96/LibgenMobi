@@ -1,7 +1,7 @@
 package com.blowmymind.libgen;
 
-import com.blowmymind.libgen.DataLayer.DataLayer;
-import com.blowmymind.libgen.MainActivity_MVP.DataCallbackInterface;
+import com.blowmymind.libgen.dataLayer.DataLayer;
+import com.blowmymind.libgen.mainActivity_MVP.DataCallbackInterface;
 
 import org.jsoup.nodes.Document;
 import org.junit.Test;

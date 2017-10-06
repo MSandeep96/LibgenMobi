@@ -1,4 +1,4 @@
-package com.blowmymind.libgen.DataLayer;
+package com.blowmymind.libgen.dataLayer;
 
 /**
  * Created by Sandeep on 06-10-2017.

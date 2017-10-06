@@ -1,41 +1,43 @@
-package com.blowmymind.libgen.MainActivity_MVP;
+package com.blowmymind.libgen.mainActivity_MVP;
 
 import android.app.AlertDialog;
 import android.app.Fragment;
-import android.app.FragmentTransaction;
 import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 
-import com.blowmymind.libgen.DataLayer.DataLayer;
+import com.blowmymind.libgen.dataLayer.DataLayer;
+import com.blowmymind.libgen.dialogs.SearchDialogFragment;
 import com.blowmymind.libgen.R;
 
 import org.jsoup.nodes.Document;
 
 import butterknife.BindView;
+import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements MainCallbackInterface,DataCallbackInterface{
+public class MainActivity extends AppCompatActivity implements MainCallbackInterface, DataCallbackInterface {
 
     @BindView(R.id.am_fab_search)
     FloatingActionButton fab;
+    private String currentSearchTerm = null;
 
     @OnClick(R.id.am_fab_search)
-    void searchClicked(){
-        FragmentTransaction ft = getFragmentManager().beginTransaction();
+    void searchClicked() {
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         Fragment prev = getFragmentManager().findFragmentByTag("dialog");
         if (prev != null) {
             return;
         }
         ft.addToBackStack(null);
-        /*
 
-
-        // Create and show the dialog.
-        DialogFragment newFragment = MyDialogFragment.newInstance(mStackLevel);
-        newFragment.show(ft, "dialog");*/
+        SearchDialogFragment searchDialog =
+                SearchDialogFragment.newInstance(currentSearchTerm != null,
+                        currentSearchTerm);
+        searchDialog.show(ft, "dialog");
     }
 
     @BindView(R.id.am_rv_books)
@@ -45,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
     }
 
     private void setUpRecyclerView() {
@@ -53,6 +56,7 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
 
     @Override
     public void newSearchTerm(String currentSearchTerm) {
+        this.currentSearchTerm = currentSearchTerm;
         DataLayer mSearchBox = new DataLayer(currentSearchTerm);
         mSearchBox.initSearch(this);
     }
@@ -68,7 +72,7 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
 
                     }
                 })
-        .show();
+                .show();
     }
 
     @Override
