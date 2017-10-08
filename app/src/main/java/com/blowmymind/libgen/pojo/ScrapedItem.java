@@ -12,8 +12,9 @@ import java.util.ArrayList;
 public class ScrapedItem implements Parcelable{
     private String searchTerm;
     private String encodedSearchTerm;
-    private ArrayList<Book> books;
+    private ArrayList<Book> books = new ArrayList<>();
     private int currentPageNo;
+    private boolean hasMoreItems;
 
     public ScrapedItem(String currentSearchTerm, String encodedSearchTerm) {
         searchTerm = currentSearchTerm;
@@ -37,9 +38,21 @@ public class ScrapedItem implements Parcelable{
         return currentPageNo;
     }
 
+    public boolean hasMoreItems() {
+        return hasMoreItems;
+    }
+
+    public int getNextPage() {
+        return ++currentPageNo;
+    }
+
     @Override
     public int describeContents() {
         return 0;
+    }
+
+    public void setHasMoreItems(boolean hasMoreItems) {
+        this.hasMoreItems = hasMoreItems;
     }
 
     @Override

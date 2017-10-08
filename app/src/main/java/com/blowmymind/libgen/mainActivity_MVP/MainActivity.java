@@ -17,14 +17,15 @@ import com.blowmymind.libgen.R;
 import com.blowmymind.libgen.adapters.BooksAdapter;
 import com.blowmymind.libgen.dataLayer.DataLayer;
 import com.blowmymind.libgen.dialogs.SearchDialogFragment;
-import com.blowmymind.libgen.pojo.Book;
 import com.blowmymind.libgen.pojo.ScrapedItem;
-
-import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+
+/**
+ * TODO: Move runOnUIThread method to datalayer itself
+ */
 
 public class MainActivity extends AppCompatActivity implements MainCallbackInterface, DataCallbackInterface {
 
@@ -46,11 +47,42 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
     private DataLayer mSearchBox;
     private BooksAdapter mAdapter;
 
+    private boolean isLoading = false;
+
     RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+            int visibleItemCount = mLayoutManager.getChildCount();
+            int totalItemCount = mLayoutManager.getItemCount();
+            int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
 
+            if (currentSearchItem.hasMoreItems() && !isLoading ) {
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                        && firstVisibleItemPosition >= 0) {
+                    mSearchBox.loadMore(new PaginationCallbackInterface() {
+                        @Override
+                        public void success(final int startIndex, final int items) {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    mAdapter.notifyItemRangeInserted(startIndex,items);
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void failed() {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    searchFailed();
+                                }
+                            });
+                        }
+                    });
+                }
+            }
         }
     };
 
@@ -111,10 +143,11 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
     }
 
     @Override
-    public void searchSuccess(final ArrayList<Book> books) {
+    public void searchSuccess(final ScrapedItem books) {
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                currentSearchItem = books;
                 mAdapter = new BooksAdapter(books);
                 recyclerView.setAdapter(mAdapter);
                 loadingIcon.setVisibility(View.GONE);

@@ -3,47 +3,77 @@ package com.blowmymind.libgen.adapters;
 import android.content.Intent;
 import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.blowmymind.libgen.R;
-import com.blowmymind.libgen.pojo.Book;
-
-import java.util.ArrayList;
+import com.blowmymind.libgen.pojo.ScrapedItem;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksAdapterViewHolder> {
+public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-    private final ArrayList<Book> books;
+    private final ScrapedItem scrapedItem;
+    private final int VIEW_TYPE = 0;
+    private final int LOAD_TYPE = 1;
 
-    public BooksAdapter(ArrayList<Book> books){
-        this.books = books;
+
+    public BooksAdapter(ScrapedItem item){
+        scrapedItem = item;
     }
 
     @Override
-    public BooksAdapterViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.book_view, parent, false);
-        return new BooksAdapterViewHolder(view);
+    public int getItemViewType(int position) {
+        if(position==scrapedItem.getBooks().size()){
+            return LOAD_TYPE;
+        }else{
+            return VIEW_TYPE;
+        }
     }
 
     @Override
-    public void onBindViewHolder(BooksAdapterViewHolder holder, int position) {
-        holder.bindItem(position);
+    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        if(viewType == VIEW_TYPE) {
+            //actual book view
+            View view = LayoutInflater.from(parent.getContext())
+                    .inflate(R.layout.book_view, parent, false);
+            return new BooksAdapterViewHolder(view);
+        }else{
+            //loading icon for pagination
+            LinearLayout mLinearLayout = new LinearLayout(parent.getContext());
+            ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+            mLinearLayout.setLayoutParams(params);
+            mLinearLayout.setGravity(Gravity.CENTER_HORIZONTAL);
+            ProgressBar progressBar = new ProgressBar(parent.getContext());
+            mLinearLayout.addView(progressBar);
+            return new RecyclerView.ViewHolder(mLinearLayout) {
+            };
+        }
+    }
+
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        if(holder instanceof BooksAdapterViewHolder){
+            ((BooksAdapterViewHolder)holder).bindItem(position);
+        }
     }
 
     @Override
     public int getItemCount() {
-        return books.size();
+        if(scrapedItem.hasMoreItems())
+            return scrapedItem.getBooks().size() + 1;
+        return scrapedItem.getBooks().size();
     }
 
-    public class BooksAdapterViewHolder extends RecyclerView.ViewHolder {
+    class BooksAdapterViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.bv_tv_title)
         TextView bvTvTitle;
@@ -63,20 +93,20 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksAdapter
         TextView bvTvSize;
 
         @OnClick({R.id.bv_btn_link1, R.id.bv_btn_link2, R.id.bv_btn_link3, R.id.bv_btn_link4})
-        public void onViewClicked(View view) {
+        void onViewClicked(View view) {
             String bookUrl = null;
             switch (view.getId()) {
                 case R.id.bv_btn_link1:
-                    bookUrl = books.get(getAdapterPosition()).getMirrors().get(0);
+                    bookUrl = scrapedItem.getBooks().get(getAdapterPosition()).getMirrors().get(0);
                     break;
                 case R.id.bv_btn_link2:
-                    bookUrl = books.get(getAdapterPosition()).getMirrors().get(1);
+                    bookUrl = scrapedItem.getBooks().get(getAdapterPosition()).getMirrors().get(1);
                     break;
                 case R.id.bv_btn_link3:
-                    bookUrl = books.get(getAdapterPosition()).getMirrors().get(2);
+                    bookUrl = scrapedItem.getBooks().get(getAdapterPosition()).getMirrors().get(2);
                     break;
                 case R.id.bv_btn_link4:
-                    bookUrl = books.get(getAdapterPosition()).getMirrors().get(3);
+                    bookUrl = scrapedItem.getBooks().get(getAdapterPosition()).getMirrors().get(3);
                     break;
             }
             Intent i = new Intent(Intent.ACTION_VIEW);
@@ -84,20 +114,20 @@ public class BooksAdapter extends RecyclerView.Adapter<BooksAdapter.BooksAdapter
             view.getContext().startActivity(i);
         }
 
-        public BooksAdapterViewHolder(View itemView) {
+        BooksAdapterViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
         }
 
-        public void bindItem(int position) {
-            bvTvTitle.setText(books.get(position).getTitle());
-            bvTvAuthors.setText(books.get(position).getAuthors());
-            bvTvExtension.setText(books.get(position).getExtension());
-            bvTvLang.setText(books.get(position).getLanguage());
-            bvTvPublisher.setText(books.get(position).getPublisher());
-            bvTvYear.setText(books.get(position).getYear());
-            bvTvSize.setText(books.get(position).getSize());
-            bvTvPages.setText(books.get(position).getPages());
+        void bindItem(int position) {
+            bvTvTitle.setText(scrapedItem.getBooks().get(position).getTitle());
+            bvTvAuthors.setText(scrapedItem.getBooks().get(position).getAuthors());
+            bvTvExtension.setText(scrapedItem.getBooks().get(position).getExtension());
+            bvTvLang.setText(scrapedItem.getBooks().get(position).getLanguage());
+            bvTvPublisher.setText(scrapedItem.getBooks().get(position).getPublisher());
+            bvTvYear.setText(scrapedItem.getBooks().get(position).getYear());
+            bvTvSize.setText(scrapedItem.getBooks().get(position).getSize());
+            bvTvPages.setText(scrapedItem.getBooks().get(position).getPages());
         }
     }
 

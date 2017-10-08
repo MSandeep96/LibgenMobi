@@ -11,20 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Sandeep on 06-10-2017.
+ * The POJO implementation of a book from Libgen with all details.
  */
 
 public class Book implements Parcelable{
-    String id;
-    String authors = "Not given";
-    String title = "Not given";
-    String publisher = "Not given";
-    String year = "Not given";
-    String pages = "Undefined";
-    String language = "Not given";
-    String size;
-    String extension;
-    ArrayList<String> mirrors;
+    private String id;
+    private String authors = "Not given";
+    private String title = "Not given";
+    private String publisher = "Not given";
+    private String year = "Not given";
+    private String pages = "Undefined";
+    private String language = "Not given";
+    private String size;
+    private String extension;
+    private ArrayList<String> mirrors;
 
     public String getId() {
         return id;
@@ -126,7 +126,7 @@ public class Book implements Parcelable{
         dest.writeStringList(this.mirrors);
     }
 
-    protected Book(Parcel in) {
+    private Book(Parcel in) {
         this.id = in.readString();
         this.authors = in.readString();
         this.title = in.readString();

@@ -2,11 +2,10 @@ package com.blowmymind.libgen;
 
 import com.blowmymind.libgen.dataLayer.DataLayer;
 import com.blowmymind.libgen.mainActivity_MVP.DataCallbackInterface;
-import com.blowmymind.libgen.pojo.Book;
+import com.blowmymind.libgen.pojo.ScrapedItem;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import static org.awaitility.Awaitility.await;
@@ -31,7 +30,7 @@ public class DataLayerTest {
             }
 
             @Override
-            public void searchSuccess(ArrayList<Book> doc) {
+            public void searchSuccess(ScrapedItem doc) {
                 testMethod = 1;
             }
         });
