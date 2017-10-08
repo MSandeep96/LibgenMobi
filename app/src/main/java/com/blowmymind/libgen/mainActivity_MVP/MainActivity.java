@@ -92,8 +92,14 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        setupRecyclerView();
+    }
+
+    private void setupRecyclerView() {
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
+        recyclerView.addOnScrollListener(mScrollListener);
     }
 
 

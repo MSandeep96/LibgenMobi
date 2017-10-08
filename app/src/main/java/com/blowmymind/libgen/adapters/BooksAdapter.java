@@ -14,6 +14,8 @@ import android.widget.TextView;
 import com.blowmymind.libgen.R;
 import com.blowmymind.libgen.pojo.ScrapedItem;
 
+import net.cachapa.expandablelayout.ExpandableLayout;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -79,18 +81,29 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         TextView bvTvTitle;
         @BindView(R.id.bv_tv_authors)
         TextView bvTvAuthors;
-        @BindView(R.id.bv_tv_publisher)
-        TextView bvTvPublisher;
-        @BindView(R.id.bv_tv_pages)
-        TextView bvTvPages;
-        @BindView(R.id.bv_tv_year)
-        TextView bvTvYear;
-        @BindView(R.id.bv_tv_extension)
-        TextView bvTvExtension;
-        @BindView(R.id.bv_tv_lang)
-        TextView bvTvLang;
-        @BindView(R.id.bv_tv_size)
-        TextView bvTvSize;
+        @BindView(R.id.bv_tv_details)
+        TextView bvTvDetails;
+        @BindView(R.id.bv_exp_details)
+        ExpandableLayout detailsExpandable;
+        @BindView(R.id.bv_exp_download)
+        ExpandableLayout downloadExpandable;
+
+        @OnClick(R.id.bv_btn_details)
+        void expandDetails(){
+            if(detailsExpandable.isExpanded())
+                detailsExpandable.collapse();
+            else
+                detailsExpandable.expand();
+        }
+
+        @OnClick(R.id.bv_btn_download)
+        void expandDownload(){
+            if(downloadExpandable.isExpanded()){
+                downloadExpandable.collapse();
+            }else{
+                downloadExpandable.expand();
+            }
+        }
 
         @OnClick({R.id.bv_btn_link1, R.id.bv_btn_link2, R.id.bv_btn_link3, R.id.bv_btn_link4})
         void onViewClicked(View view) {
@@ -122,12 +135,7 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void bindItem(int position) {
             bvTvTitle.setText(scrapedItem.getBooks().get(position).getTitle());
             bvTvAuthors.setText(scrapedItem.getBooks().get(position).getAuthors());
-            bvTvExtension.setText(scrapedItem.getBooks().get(position).getExtension());
-            bvTvLang.setText(scrapedItem.getBooks().get(position).getLanguage());
-            bvTvPublisher.setText(scrapedItem.getBooks().get(position).getPublisher());
-            bvTvYear.setText(scrapedItem.getBooks().get(position).getYear());
-            bvTvSize.setText(scrapedItem.getBooks().get(position).getSize());
-            bvTvPages.setText(scrapedItem.getBooks().get(position).getPages());
+            bvTvDetails.setText(scrapedItem.getBooks().get(position).getDetails());
         }
     }
 

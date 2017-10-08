@@ -112,7 +112,7 @@ public class SearchDialogFragment extends DialogFragment {
 
     private void setUpDialog() {
         if (hasSearchTerm) {
-            searchTerm.setText(previousSearch.getSearchTerm());
+            searchTerm.append(previousSearch.getSearchTerm());
             if (previousSearch.getSearchTerm().length() != 0)
                 clear.setVisibility(View.VISIBLE);
         }
