@@ -1,6 +1,8 @@
 package com.blowmymind.libgen.mainActivity_MVP;
 
-import org.jsoup.nodes.Document;
+import com.blowmymind.libgen.pojo.Book;
+
+import java.util.ArrayList;
 
 /**
  * Created by Sandeep on 06-10-2017.
@@ -10,5 +12,5 @@ public interface DataCallbackInterface {
 
     void searchFailed();
 
-    void searchSuccess(Document doc);
+    void searchSuccess(ArrayList<Book> doc);
 }

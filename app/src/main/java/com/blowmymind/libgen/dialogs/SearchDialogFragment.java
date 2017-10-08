@@ -12,6 +12,7 @@ import android.widget.EditText;
 
 import com.blowmymind.libgen.mainActivity_MVP.MainCallbackInterface;
 import com.blowmymind.libgen.R;
+import com.blowmymind.libgen.pojo.ScrapedItem;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -23,14 +24,16 @@ import butterknife.OnTextChanged;
 
 public class SearchDialogFragment extends DialogFragment {
 
-
     private static String ARG_PARAM1 = "param1";
     private static String ARG_PARAM2 = "param2";
     private boolean hasSearchTerm;
-    private String previousSearch;
+    private ScrapedItem previousSearch;
 
     @BindView(R.id.fsd_btn_clear)
     Button clear;
+
+    @BindView(R.id.fsd_et_search)
+    EditText searchTerm;
 
     @OnClick(R.id.fsd_btn_clear)
     void clearClicked(View view) {
@@ -47,25 +50,25 @@ public class SearchDialogFragment extends DialogFragment {
         }
     }
 
-    @BindView(R.id.fsd_et_search)
-    EditText searchTerm;
-
     @OnClick(R.id.fsd_btn_go)
     void startSearch() {
-        String currentSearchTerm = searchTerm.getText().toString().trim().toLowerCase();
+        String currentSearchTerm = searchTerm.getText().toString().trim();
         if (currentSearchTerm.length() == 0 ||
-                (previousSearch != null && previousSearch.equals(currentSearchTerm))) {
+                (previousSearch != null &&
+                        previousSearch.getSearchTerm().equals(currentSearchTerm))) {
             dismiss();
             return;
         }
+        String encodedSearchTerm;
         try {
-            currentSearchTerm = URLEncoder.encode(currentSearchTerm, "utf-8");
+            encodedSearchTerm = URLEncoder.encode(currentSearchTerm.toLowerCase(), "utf-8");
         } catch (UnsupportedEncodingException e) {
             searchTerm.setError("Invalid characters");
             dismiss();
             return;
         }
-        ((MainCallbackInterface) getContext()).newSearchTerm(currentSearchTerm);
+        ScrapedItem item = new ScrapedItem(currentSearchTerm,encodedSearchTerm);
+        ((MainCallbackInterface) getContext()).newSearchTerm(item);
         dismiss();
     }
 
@@ -78,11 +81,11 @@ public class SearchDialogFragment extends DialogFragment {
      * @param previousSearch The string of the previous search
      * @return the dialog with inflated with the above values
      */
-    public static SearchDialogFragment newInstance(boolean hasSearchTerm, String previousSearch) {
+    public static SearchDialogFragment newInstance(boolean hasSearchTerm, ScrapedItem previousSearch) {
         SearchDialogFragment fragment = new SearchDialogFragment();
         Bundle args = new Bundle();
         args.putBoolean(ARG_PARAM1, hasSearchTerm);
-        args.putString(ARG_PARAM2, previousSearch);
+        args.putParcelable(ARG_PARAM2, previousSearch);
         fragment.setArguments(args);
         return fragment;
     }
@@ -93,7 +96,7 @@ public class SearchDialogFragment extends DialogFragment {
         if (getArguments() != null) {
             hasSearchTerm = getArguments().getBoolean(ARG_PARAM1);
             if (hasSearchTerm) {
-                previousSearch = getArguments().getString(ARG_PARAM2);
+                previousSearch = getArguments().getParcelable(ARG_PARAM2);
             }
         }
     }
@@ -109,8 +112,8 @@ public class SearchDialogFragment extends DialogFragment {
 
     private void setUpDialog() {
         if (hasSearchTerm) {
-            searchTerm.setText(previousSearch);
-            if (previousSearch.length() != 0)
+            searchTerm.setText(previousSearch.getSearchTerm());
+            if (previousSearch.getSearchTerm().length() != 0)
                 clear.setVisibility(View.VISIBLE);
         }
     }

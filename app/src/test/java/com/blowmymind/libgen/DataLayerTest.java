@@ -2,10 +2,11 @@ package com.blowmymind.libgen;
 
 import com.blowmymind.libgen.dataLayer.DataLayer;
 import com.blowmymind.libgen.mainActivity_MVP.DataCallbackInterface;
+import com.blowmymind.libgen.pojo.Book;
 
-import org.jsoup.nodes.Document;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.concurrent.Callable;
 
 import static org.awaitility.Awaitility.await;
@@ -20,7 +21,7 @@ public class DataLayerTest {
     int testMethod = -1;
 
     @Test
-    public void scraping_isDone(){
+    public void scraping_isDone() throws Exception{
         DataLayer dataLayer = new DataLayer("dan+brown");
         dataLayer.initSearch(new DataCallbackInterface() {
 
@@ -30,7 +31,7 @@ public class DataLayerTest {
             }
 
             @Override
-            public void searchSuccess(Document doc) {
+            public void searchSuccess(ArrayList<Book> doc) {
                 testMethod = 1;
             }
         });
