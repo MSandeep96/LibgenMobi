@@ -14,8 +14,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.blowmymind.libgen.R;
+import com.blowmymind.libgen.Utils;
 import com.blowmymind.libgen.adapters.BooksAdapter;
 import com.blowmymind.libgen.dataLayer.DataLayer;
+import com.blowmymind.libgen.decorations.SpecialItemDecoration;
 import com.blowmymind.libgen.dialogs.SearchDialogFragment;
 import com.blowmymind.libgen.pojo.ScrapedItem;
 
@@ -66,7 +68,7 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
-                                    mAdapter.notifyItemRangeInserted(startIndex,items);
+                                    mAdapter.notifyDataSetChanged();
                                 }
                             });
                         }
@@ -86,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
         }
     };
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -100,8 +101,10 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
         mLayoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addOnScrollListener(mScrollListener);
+        SpecialItemDecoration itemDecoration =
+                new SpecialItemDecoration(Utils.convertDpToPixel(16,this));
+        recyclerView.addItemDecoration(itemDecoration);
     }
-
 
     @OnClick(R.id.am_fab_search)
     void searchClicked() {
@@ -120,12 +123,12 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
 
     @Override
     public void newSearchTerm(ScrapedItem currentSearchItem) {
-        this.currentSearchItem = currentSearchItem;
-        mSearchBox = new DataLayer(currentSearchItem);
-        mSearchBox.initSearch(this);
         if(startSearchText.getVisibility()== View.VISIBLE){
             startSearchText.setVisibility(View.GONE);
         }
+        this.currentSearchItem = currentSearchItem;
+        mSearchBox = new DataLayer(currentSearchItem);
+        mSearchBox.initSearch(this);
         loadingIcon.setVisibility(View.VISIBLE);
     }
 
@@ -134,6 +137,9 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                if(startSearchText.getVisibility() == View.GONE){
+                    startSearchText.setVisibility(View.VISIBLE);
+                }
                 loadingIcon.setVisibility(View.GONE);
                 AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
                 alertDialogBuilder
@@ -153,10 +159,10 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
         MainActivity.this.runOnUiThread(new Runnable() {
             @Override
             public void run() {
+                loadingIcon.setVisibility(View.GONE);
                 currentSearchItem = books;
                 mAdapter = new BooksAdapter(books);
                 recyclerView.setAdapter(mAdapter);
-                loadingIcon.setVisibility(View.GONE);
             }
         });
     }

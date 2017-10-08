@@ -2,8 +2,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:minWidth="300dp"
+    android:layout_height="wrap_content"
+    android:layout_margin="16dp"
     tools:context="com.blowmymind.libgen.dialogs.SearchDialogFragment">
 
     <View
@@ -23,10 +23,11 @@
         android:id="@+id/fsd_et_search"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:minHeight="80dp"
         android:layout_marginLeft="8dp"
         android:layout_marginRight="8dp"
         android:layout_marginTop="8dp"
+        android:minLines="4"
+        android:gravity="top"
         app:layout_constraintLeft_toLeftOf="@+id/view"
         app:layout_constraintRight_toRightOf="@+id/view"
         app:layout_constraintTop_toBottomOf="@+id/view" />
@@ -40,7 +41,7 @@
         android:layout_marginTop="8dp"
         android:text="Search"
         android:textColor="@android:color/white"
-        android:textSize="18sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintLeft_toLeftOf="@+id/view"

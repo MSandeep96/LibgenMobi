@@ -13,14 +13,13 @@ import java.util.List;
 /**
  * The POJO implementation of a book from Libgen with all details.
  */
-
 public class Book implements Parcelable {
     private String id;
     private String authors = "Not given";
     private String title = "Not given";
     private String publisher = "Not given";
     private String year = "Not given";
-    private String pages = "Undefined";
+    private String pages = "Not given";
     private String language = "Not given";
     private String size;
     private String extension;
@@ -38,34 +37,9 @@ public class Book implements Parcelable {
         return title;
     }
 
-    public String getPublisher() {
-        return publisher;
-    }
-
-    public String getYear() {
-        return year;
-    }
-
-    public String getPages() {
-        return pages + " pages";
-    }
-
-    public String getLanguage() {
-        return language;
-    }
-
-    public String getSize() {
-        return size;
-    }
-
-    public String getExtension() {
-        return extension;
-    }
-
     public ArrayList<String> getMirrors() {
         return mirrors;
     }
-
 
     public String getDetails() {
         return "Extension: " + extension + "\n" +
@@ -203,5 +177,4 @@ public class Book implements Parcelable {
             return new Book[size];
         }
     };
-
 }

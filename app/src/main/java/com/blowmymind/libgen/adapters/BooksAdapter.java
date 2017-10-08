@@ -69,6 +69,13 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     }
 
     @Override
+    public void onViewRecycled(RecyclerView.ViewHolder holder) {
+        if(holder instanceof BooksAdapterViewHolder){
+            ((BooksAdapterViewHolder)holder).recycleView();
+        }
+    }
+
+    @Override
     public int getItemCount() {
         if(scrapedItem.hasMoreItems())
             return scrapedItem.getBooks().size() + 1;
@@ -92,8 +99,11 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         void expandDetails(){
             if(detailsExpandable.isExpanded())
                 detailsExpandable.collapse();
-            else
+            else {
+                if(downloadExpandable.isExpanded())
+                    downloadExpandable.collapse();
                 detailsExpandable.expand();
+            }
         }
 
         @OnClick(R.id.bv_btn_download)
@@ -101,6 +111,8 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             if(downloadExpandable.isExpanded()){
                 downloadExpandable.collapse();
             }else{
+                if(detailsExpandable.isExpanded())
+                    detailsExpandable.collapse();
                 downloadExpandable.expand();
             }
         }
@@ -137,6 +149,10 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
             bvTvAuthors.setText(scrapedItem.getBooks().get(position).getAuthors());
             bvTvDetails.setText(scrapedItem.getBooks().get(position).getDetails());
         }
-    }
 
+        void recycleView() {
+            detailsExpandable.collapse();
+            downloadExpandable.collapse();
+        }
+    }
 }

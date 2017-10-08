@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="16dp">
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp">
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
@@ -49,41 +50,43 @@
             android:id="@+id/bv_btn_details"
             android:layout_width="32dp"
             android:layout_height="32dp"
-            android:layout_marginRight="16dp"
             android:layout_marginTop="8dp"
-            android:src="@drawable/ic_search_white_48dp"
-            app:layout_constraintRight_toLeftOf="@+id/bv_btn_download"
+            android:src="@drawable/ic_info_outline_black_24dp"
+            android:scaleType="fitXY"
+            android:background="@null"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="16dp"
+            app:layout_goneMarginBottom="16dp"
+            app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/bv_tv_authors"
-            android:layout_marginEnd="16dp" />
+            app:layout_constraintBottom_toTopOf="@+id/bv_exp_details"
+            app:layout_constraintVertical_bias="0.0" />
 
         <ImageButton
             android:id="@+id/bv_btn_download"
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="8dp"
-            android:src="@drawable/ic_search_white_48dp"
+            android:src="@drawable/ic_file_download_black_24dp"
+            android:scaleType="fitXY"
+            android:background="@null"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bv_tv_authors"
-            android:layout_marginEnd="16dp" />
+            app:layout_goneMarginBottom="16dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@+id/bv_tv_authors" />
 
         <net.cachapa.expandablelayout.ExpandableLayout
             android:id="@+id/bv_exp_download"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
+            android:layout_marginLeft="0dp"
+            android:layout_marginRight="0dp"
             app:el_duration="200"
             app:el_expanded="false"
+            android:layout_marginTop="16dp"
+            app:layout_constraintTop_toBottomOf="@id/bv_btn_download"
             app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bv_btn_details"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="0dp"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintRight_toRightOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -133,22 +136,19 @@
             android:id="@+id/bv_exp_details"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="0dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:layout_marginTop="16dp"
             app:el_duration="200"
             app:el_expanded="false"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/bv_exp_download"
-            app:layout_constraintVertical_bias="0.0">
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <TextView
                 android:id="@+id/bv_tv_details"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:paddingBottom="16dp" />
 
         </net.cachapa.expandablelayout.ExpandableLayout>
 

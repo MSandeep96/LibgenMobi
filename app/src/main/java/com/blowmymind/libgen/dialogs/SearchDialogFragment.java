@@ -7,11 +7,12 @@ import android.text.Editable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 
-import com.blowmymind.libgen.mainActivity_MVP.MainCallbackInterface;
 import com.blowmymind.libgen.R;
+import com.blowmymind.libgen.mainActivity_MVP.MainCallbackInterface;
 import com.blowmymind.libgen.pojo.ScrapedItem;
 
 import java.io.UnsupportedEncodingException;
@@ -90,6 +91,7 @@ public class SearchDialogFragment extends DialogFragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -99,6 +101,16 @@ public class SearchDialogFragment extends DialogFragment {
                 previousSearch = getArguments().getParcelable(ARG_PARAM2);
             }
         }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        getDialog().getWindow()
+                .setLayout(
+                        WindowManager.LayoutParams.MATCH_PARENT,
+                        WindowManager.LayoutParams.WRAP_CONTENT
+                );
     }
 
     @Override
