@@ -1,4 +1,4 @@
-package com.blowmymind.libgen.decorations;
+package com.blowmymind.libgen.recyclerview_addons;
 
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
@@ -23,5 +23,6 @@ public class SpecialItemDecoration extends RecyclerView.ItemDecoration {
         if (parent.getChildAdapterPosition(view) == 0) {
             outRect.top = space;
         }
+
     }
 }

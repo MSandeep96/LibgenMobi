@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -17,10 +16,11 @@ import com.blowmymind.libgen.R;
 import com.blowmymind.libgen.Utils;
 import com.blowmymind.libgen.adapters.BooksAdapter;
 import com.blowmymind.libgen.dataLayer.DataLayer;
-import com.blowmymind.libgen.decorations.SpecialItemDecoration;
 import com.blowmymind.libgen.dialogs.SearchDialogFragment;
 import com.blowmymind.libgen.pojo.Book;
 import com.blowmymind.libgen.pojo.ScrapedItem;
+import com.blowmymind.libgen.recyclerview_addons.SpecialItemDecoration;
+import com.blowmymind.libgen.recyclerview_addons.WrapperLinearLayout;
 
 import java.util.ArrayList;
 
@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
     @BindView(R.id.am_tv_start_search)
     TextView startSearchText;
 
-    LinearLayoutManager mLayoutManager ;
+    WrapperLinearLayout mLayoutManager ;
 
     private ScrapedItem currentSearchItem = null;
     private DataLayer mSearchBox;
@@ -54,10 +54,43 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
 
     private boolean isLoading = false;
 
+    PaginationCallbackInterface paginationCallbackInterface = new PaginationCallbackInterface() {
+        @Override
+        public void failed() {
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    searchFailed();
+                    isLoading = false;
+                }
+            });
+        }
+
+        @Override
+        public void success(final ArrayList<Book> newBooks) {
+            MainActivity.this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    int startIndex = currentSearchItem.getBooks().size();
+                    currentSearchItem.getBooks().addAll(newBooks);
+                    mAdapter.notifyItemRangeInserted(startIndex,newBooks.size());
+                    isLoading = false;
+                }
+            });
+        }
+    };
+
     RecyclerView.OnScrollListener mScrollListener = new RecyclerView.OnScrollListener() {
         @Override
         public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
             super.onScrolled(recyclerView, dx, dy);
+
+            //hide fab on scroll
+            if(dy>0 || dy<0 && fab.isShown()){
+                fab.hide();
+            }
+
+            //pagination
             int visibleItemCount = mLayoutManager.getChildCount();
             int totalItemCount = mLayoutManager.getItemCount();
             int firstVisibleItemPosition = mLayoutManager.findFirstVisibleItemPosition();
@@ -65,31 +98,19 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
             if (currentSearchItem.hasMoreItems() && !isLoading ) {
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && firstVisibleItemPosition >= 0) {
-                    mSearchBox.loadMore(new PaginationCallbackInterface() {
-                        @Override
-                        public void failed() {
-                            MainActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    searchFailed();
-                                }
-                            });
-                        }
-
-                        @Override
-                        public void success(final ArrayList<Book> newBooks) {
-                            MainActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    int startIndex = currentSearchItem.getBooks().size();
-                                    currentSearchItem.getBooks().addAll(newBooks);
-                                    mAdapter.notifyItemRangeInserted(startIndex,newBooks.size());
-                                }
-                            });
-                        }
-                    });
+                    isLoading = true;
+                    mSearchBox.loadMore(paginationCallbackInterface);
                 }
             }
+        }
+
+        @Override
+        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+            if(newState == RecyclerView.SCROLL_STATE_IDLE){
+                if(recyclerView.canScrollVertically(1) || currentSearchItem.hasMoreItems())
+                    fab.show();
+            }
+            super.onScrollStateChanged(recyclerView, newState);
         }
     };
 
@@ -103,7 +124,7 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
     }
 
     private void setupRecyclerView() {
-        mLayoutManager = new LinearLayoutManager(this);
+        mLayoutManager = new WrapperLinearLayout(this);
         recyclerView.setLayoutManager(mLayoutManager);
         recyclerView.addOnScrollListener(mScrollListener);
         SpecialItemDecoration itemDecoration =

@@ -82,7 +82,7 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         return scrapedItem.getBooks().size();
     }
 
-    class BooksAdapterViewHolder extends RecyclerView.ViewHolder {
+    public class BooksAdapterViewHolder extends RecyclerView.ViewHolder {
 
         @BindView(R.id.bv_tv_title)
         TextView bvTvTitle;
