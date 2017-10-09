@@ -14,8 +14,6 @@ import android.widget.TextView;
 import com.blowmymind.libgen.R;
 import com.blowmymind.libgen.pojo.ScrapedItem;
 
-import net.cachapa.expandablelayout.ExpandableLayout;
-
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -28,27 +26,27 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
     private final int LOAD_TYPE = 1;
 
 
-    public BooksAdapter(ScrapedItem item){
+    public BooksAdapter(ScrapedItem item) {
         scrapedItem = item;
     }
 
     @Override
     public int getItemViewType(int position) {
-        if(position==scrapedItem.getBooks().size()){
+        if (position == scrapedItem.getBooks().size()) {
             return LOAD_TYPE;
-        }else{
+        } else {
             return VIEW_TYPE;
         }
     }
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        if(viewType == VIEW_TYPE) {
+        if (viewType == VIEW_TYPE) {
             //actual book view
             View view = LayoutInflater.from(parent.getContext())
                     .inflate(R.layout.book_view, parent, false);
             return new BooksAdapterViewHolder(view);
-        }else{
+        } else {
             //loading icon for pagination
             LinearLayout mLinearLayout = new LinearLayout(parent.getContext());
             ViewGroup.LayoutParams params = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -63,21 +61,21 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        if(holder instanceof BooksAdapterViewHolder){
-            ((BooksAdapterViewHolder)holder).bindItem(position);
+        if (holder instanceof BooksAdapterViewHolder) {
+            ((BooksAdapterViewHolder) holder).bindItem(position);
         }
     }
 
     @Override
     public void onViewRecycled(RecyclerView.ViewHolder holder) {
-        if(holder instanceof BooksAdapterViewHolder){
-            ((BooksAdapterViewHolder)holder).recycleView();
+        if (holder instanceof BooksAdapterViewHolder) {
+            ((BooksAdapterViewHolder) holder).recycleView();
         }
     }
 
     @Override
     public int getItemCount() {
-        if(scrapedItem.hasMoreItems())
+        if (scrapedItem.hasMoreItems())
             return scrapedItem.getBooks().size() + 1;
         return scrapedItem.getBooks().size();
     }
@@ -91,31 +89,32 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         @BindView(R.id.bv_tv_details)
         TextView bvTvDetails;
         @BindView(R.id.bv_exp_details)
-        ExpandableLayout detailsExpandable;
+        LinearLayout detailsExpandable;
         @BindView(R.id.bv_exp_download)
-        ExpandableLayout downloadExpandable;
+        LinearLayout downloadExpandable;
 
         @OnClick(R.id.bv_btn_details)
-        void expandDetails(){
-            if(detailsExpandable.isExpanded())
-                detailsExpandable.collapse();
+        void expandDetails() {
+            if (detailsExpandable.getVisibility() == View.VISIBLE)
+                collapseDetailsView(false);
             else {
-                if(downloadExpandable.isExpanded())
-                    downloadExpandable.collapse();
-                detailsExpandable.expand();
+                if (downloadExpandable.getVisibility() == View.VISIBLE)
+                    collapseDownloadView(false);
+                expandDetailsView();
             }
         }
 
         @OnClick(R.id.bv_btn_download)
-        void expandDownload(){
-            if(downloadExpandable.isExpanded()){
-                downloadExpandable.collapse();
-            }else{
-                if(detailsExpandable.isExpanded())
-                    detailsExpandable.collapse();
-                downloadExpandable.expand();
+        void expandDownload() {
+            if (downloadExpandable.getVisibility() == View.VISIBLE) {
+                collapseDownloadView(false);
+            } else {
+                if (detailsExpandable.getVisibility() == View.VISIBLE)
+                    collapseDetailsView(false);
+                expandDownloadView();
             }
         }
+
 
         @OnClick({R.id.bv_btn_link1, R.id.bv_btn_link2, R.id.bv_btn_link3, R.id.bv_btn_link4})
         void onViewClicked(View view) {
@@ -151,8 +150,24 @@ public class BooksAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> 
         }
 
         void recycleView() {
-            detailsExpandable.collapse();
-            downloadExpandable.collapse();
+            collapseDetailsView(true);
+            collapseDownloadView(true);
+        }
+
+        private void collapseDownloadView(boolean quickly) {
+            downloadExpandable.setVisibility(View.GONE);
+        }
+
+        private void collapseDetailsView(boolean quickly) {
+            detailsExpandable.setVisibility(View.GONE);
+        }
+
+        private void expandDownloadView() {
+            downloadExpandable.setVisibility(View.VISIBLE);
+        }
+
+        private void expandDetailsView() {
+            detailsExpandable.setVisibility(View.VISIBLE);
         }
     }
 }
