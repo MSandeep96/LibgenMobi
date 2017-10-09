@@ -19,7 +19,10 @@ import com.blowmymind.libgen.adapters.BooksAdapter;
 import com.blowmymind.libgen.dataLayer.DataLayer;
 import com.blowmymind.libgen.decorations.SpecialItemDecoration;
 import com.blowmymind.libgen.dialogs.SearchDialogFragment;
+import com.blowmymind.libgen.pojo.Book;
 import com.blowmymind.libgen.pojo.ScrapedItem;
+
+import java.util.ArrayList;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -64,21 +67,23 @@ public class MainActivity extends AppCompatActivity implements MainCallbackInter
                         && firstVisibleItemPosition >= 0) {
                     mSearchBox.loadMore(new PaginationCallbackInterface() {
                         @Override
-                        public void success(final int startIndex, final int items) {
-                            MainActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    mAdapter.notifyDataSetChanged();
-                                }
-                            });
-                        }
-
-                        @Override
                         public void failed() {
                             MainActivity.this.runOnUiThread(new Runnable() {
                                 @Override
                                 public void run() {
                                     searchFailed();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void success(final ArrayList<Book> newBooks) {
+                            MainActivity.this.runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    int startIndex = currentSearchItem.getBooks().size();
+                                    currentSearchItem.getBooks().addAll(newBooks);
+                                    mAdapter.notifyItemRangeInserted(startIndex,newBooks.size());
                                 }
                             });
                         }

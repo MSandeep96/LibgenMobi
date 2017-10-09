@@ -19,7 +19,7 @@ public class ScrapedItem implements Parcelable{
     public ScrapedItem(String currentSearchTerm, String encodedSearchTerm) {
         searchTerm = currentSearchTerm;
         this.encodedSearchTerm = encodedSearchTerm;
-        currentPageNo = 0;
+        currentPageNo = 1;
     }
 
     public String getSearchTerm() {

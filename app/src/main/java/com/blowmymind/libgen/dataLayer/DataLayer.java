@@ -10,6 +10,7 @@ import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 /**
  * TODO: Rework the fetcher thread to work with pagination too.
@@ -104,17 +105,17 @@ public class DataLayer {
             }
             Elements trs = doc.select("table").get(2).select("tr");
             trs.remove(0);
-            int startIndex = searchItem.getBooks().size();
             if(trs.size()<25){
                 searchItem.setHasMoreItems(false);
             }else{
                 searchItem.setHasMoreItems(true);
             }
+            ArrayList<Book> newBooks = new ArrayList<>();
             for(int i=0;i<trs.size();i++){
-                searchItem.getBooks().add(new Book(trs.get(i)));
+                newBooks.add(new Book(trs.get(i)));
             }
             if(callbackInterface!=null)
-                callbackInterface.success(startIndex,searchItem.getBooks().size()-startIndex);
+                callbackInterface.success(newBooks);
         }
     }
 }
